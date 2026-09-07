@@ -101,33 +101,51 @@ function ShopPage() {
               key={p.id}
               className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)]"
             >
-              <button
-                type="button"
-                aria-label={`Open details for ${p.name}`}
-                onClick={() =>
-                  setOpenItem({
-                    name: p.name,
-                    price: p.price,
-                    description: p.description,
-                    size: p.size,
-                    material: p.material,
-                    placement: p.placement,
-                    available: p.available,
-                    slug: p.slug,
-                    images: [p.image_url, ...(p.gallery ?? [])].filter(Boolean),
-                  })
-                }
-                className="block w-full"
-              >
-                <img
-                  src={p.image_url}
-                  alt={p.name}
-                  loading="lazy"
-                  width={1200}
-                  height={912}
-                  className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </button>
+              {hasItems(p.id) ? (
+                <Link
+                  to="/shop/$slug"
+                  params={{ slug: p.slug }}
+                  aria-label={`See all items in ${p.name}`}
+                  className="block w-full"
+                >
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    loading="lazy"
+                    width={1200}
+                    height={912}
+                    className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  aria-label={`Open details for ${p.name}`}
+                  onClick={() =>
+                    setOpenItem({
+                      name: p.name,
+                      price: p.price,
+                      description: p.description,
+                      size: p.size,
+                      material: p.material,
+                      placement: p.placement,
+                      available: p.available,
+                      slug: p.slug,
+                      images: [p.image_url, ...(p.gallery ?? [])].filter(Boolean),
+                    })
+                  }
+                  className="block w-full"
+                >
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    loading="lazy"
+                    width={1200}
+                    height={912}
+                    className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </button>
+              )}
               <div className="p-6">
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="text-xl">
