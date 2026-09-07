@@ -715,14 +715,37 @@ function ProductsPanel() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button type="button" className={btn} onClick={() => create(c.id, "New item")}>
-                Add item to {c.name}
+              <label className={`${btn} cursor-pointer ${uploadingFor === c.id ? "opacity-60" : ""}`}>
+                {uploadingFor === c.id ? "Uploading…" : `Add photos to ${c.name}`}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  disabled={uploadingFor === c.id}
+                  onChange={async (e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    e.target.value = "";
+                    if (!files.length) return;
+                    setUploadingFor(c.id);
+                    await createFromImages(c, files);
+                    setUploadingFor(null);
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                className="rounded-full border border-border bg-background px-5 py-2.5 text-sm"
+                onClick={() => create(c.id, "New item")}
+              >
+                Add empty item
               </button>
               <button
                 type="button"
                 className="rounded-full border border-border bg-background px-5 py-2.5 text-sm"
                 onClick={() => setEditingId(editingId === c.id ? null : c.id)}
               >
+
                 {editingId === c.id ? "Close category" : "Edit category"}
               </button>
               {kids.length ? (
