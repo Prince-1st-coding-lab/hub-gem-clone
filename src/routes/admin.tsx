@@ -567,6 +567,8 @@ function ProductsPanel() {
   const [items, setItems] = useState<Product[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [openIds, setOpenIds] = useState<string[]>([]);
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
+
   useEffect(() => {
     if (data) setItems(data);
   }, [data]);
