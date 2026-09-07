@@ -11,7 +11,7 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             alt="G Modern Creativity Ltd logo"
             width={80}
             height={80}
-            className="h-20 w-20 shrink-0 rounded-full object-cover"
+            className="h-20 w-20 shrink-0 object-cover"
           />
           <span className="min-w-0 leading-tight">
             <span className="block font-display text-sm font-semibold tracking-tight text-foreground sm:text-base">
