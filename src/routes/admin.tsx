@@ -567,6 +567,8 @@ function ProductsPanel() {
   const [items, setItems] = useState<Product[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [openIds, setOpenIds] = useState<string[]>([]);
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
+
   useEffect(() => {
     if (data) setItems(data);
   }, [data]);
@@ -624,6 +626,33 @@ function ProductsPanel() {
     toast.success(parentId ? "Item added — fill in the details" : "Category added");
   };
 
+  const createFromImages = async (parent: Product, files: File[]) => {
+    const siblings = items.filter((p) => p.parent_id === parent.id);
+    const rows: Array<Record<string, unknown>> = [];
+    let i = 0;
+    for (const file of files) {
+      const url = await uploadImage(file);
+      if (!url) continue;
+      i += 1;
+      const base = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+      const name = base || `${parent.name} item ${siblings.length + i}`;
+      rows.push({
+        name,
+        slug: `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Math.random().toString(36).slice(2, 6)}`,
+        parent_id: parent.id,
+        position: siblings.length + i,
+        image_url: url,
+        visible: true,
+      });
+    }
+    if (!rows.length) return;
+    const { error } = await supabase.from("products").insert(rows as never);
+    if (error) { toast.error(error.message); return; }
+    refresh();
+    setOpenIds((prev) => (prev.includes(parent.id) ? prev : [...prev, parent.id]));
+    toast.success(`${rows.length} item(s) added — tap a photo to add details`);
+  };
+
   const remove = async (id: string) => {
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
@@ -635,6 +664,7 @@ function ProductsPanel() {
 
   const categories = items.filter((p) => !p.parent_id);
   const childrenOf = (id: string) => items.filter((p) => p.parent_id === id);
+
 
   const form = (p: Product) => (
     <ProductForm
@@ -652,8 +682,10 @@ function ProductsPanel() {
       <div className={card}>
         <h1 className="font-display text-xl">Shop items</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Open a category, then use “Add item” to put a new product inside it.
+          In a category, tap “Add photos” and pick one or several pictures — each photo becomes its
+          own item straight away. Tap a photo later to add price and details.
         </p>
+
         <button type="button" className={`${btn} mt-4`} onClick={() => create(null, "New category")}>
           New category
         </button>
@@ -683,14 +715,37 @@ function ProductsPanel() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <button type="button" className={btn} onClick={() => create(c.id, "New item")}>
-                Add item to {c.name}
+              <label className={`${btn} cursor-pointer ${uploadingFor === c.id ? "opacity-60" : ""}`}>
+                {uploadingFor === c.id ? "Uploading…" : `Add photos to ${c.name}`}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  disabled={uploadingFor === c.id}
+                  onChange={async (e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    e.target.value = "";
+                    if (!files.length) return;
+                    setUploadingFor(c.id);
+                    await createFromImages(c, files);
+                    setUploadingFor(null);
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                className="rounded-full border border-border bg-background px-5 py-2.5 text-sm"
+                onClick={() => create(c.id, "New item")}
+              >
+                Add empty item
               </button>
               <button
                 type="button"
                 className="rounded-full border border-border bg-background px-5 py-2.5 text-sm"
                 onClick={() => setEditingId(editingId === c.id ? null : c.id)}
               >
+
                 {editingId === c.id ? "Close category" : "Edit category"}
               </button>
               {kids.length ? (
@@ -715,21 +770,33 @@ function ProductsPanel() {
                 {kids.map((k) => (
                   <div key={k.id} className="rounded-xl border border-border bg-background p-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      {k.image_url ? (
-                        <img
-                          src={k.image_url}
-                          alt=""
-                          className="h-10 w-10 rounded-lg object-cover ring-1 ring-border"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-lg bg-muted ring-1 ring-border" />
-                      )}
-                      <div className="min-w-0 flex-1">
+                      <button
+                        type="button"
+                        aria-label={`Edit ${k.name}`}
+                        className="shrink-0"
+                        onClick={() => setEditingId(editingId === k.id ? null : k.id)}
+                      >
+                        {k.image_url ? (
+                          <img
+                            src={k.image_url}
+                            alt=""
+                            className="h-12 w-12 rounded-lg object-cover ring-1 ring-border"
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-lg bg-muted ring-1 ring-border" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        className="min-w-0 flex-1 text-left"
+                        onClick={() => setEditingId(editingId === k.id ? null : k.id)}
+                      >
                         <p className="text-sm font-medium">{k.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {k.price || "No price"} · {k.visible ? "Visible" : "Hidden"}
                         </p>
-                      </div>
+                      </button>
+
                       <button
                         type="button"
                         className="rounded-full border border-border px-4 py-2 text-xs"
