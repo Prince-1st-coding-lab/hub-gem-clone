@@ -64,9 +64,10 @@ export function ProductQuickView({
         item.available === null || item.available === undefined
           ? null
           : item.available
-            ? "Available"
+            ? "Available by ordering"
             : "Currently out of stock",
     },
+
   ].filter((s) => s.value);
 
   const orderMessage = `Hello G Modern Creativity, I would like to order: ${item.name}${
