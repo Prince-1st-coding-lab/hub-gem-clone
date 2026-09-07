@@ -5,8 +5,10 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
-        <Link to="/" className="flex min-w-0 flex-row
-         items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
+        <Link
+          to="/"
+          className="flex min-w-0 flex-row items-center gap-3"
+        >
           <img
             src={LOGO_SRC}
             alt="G Modern Creativity Ltd logo"
@@ -14,20 +16,31 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
             height={80}
             className="h-auto w-28 max-w-full object-contain sm:w-36"
           />
-          <span className="min-w-0 leading-tight">
+
+          <span className="flex min-w-0 flex-col justify-center self-center leading-tight">
             <span className="block font-display text-sm font-semibold tracking-tight text-foreground sm:text-base">
               G Modern Creativity Ltd
             </span>
+
             <span className="block text-[11px] text-muted-foreground sm:text-xs">
               {settings.tagline}
             </span>
           </span>
         </Link>
+
         <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-          <Link className="transition-colors hover:text-foreground" to="/" hash="services">
+          <Link
+            className="transition-colors hover:text-foreground"
+            to="/"
+            hash="services"
+          >
             Our Services
           </Link>
-          <Link className="transition-colors hover:text-foreground" to="/shop">
+
+          <Link
+            className="transition-colors hover:text-foreground"
+            to="/shop"
+          >
             Shop
           </Link>
         </nav>
