@@ -5,13 +5,13 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
-        <Link to="/" className="flex min-w-0 items-center gap-3">
+        <Link to="/" className="flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3">
           <img
             src={LOGO_SRC}
             alt="G Modern Creativity Ltd logo"
-            width={80}
+            width={160}
             height={80}
-            className="h-20 w-20 shrink-0 object-cover"
+            className="h-auto w-28 max-w-full object-contain sm:w-36"
           />
           <span className="min-w-0 leading-tight">
             <span className="block font-display text-sm font-semibold tracking-tight text-foreground sm:text-base">
