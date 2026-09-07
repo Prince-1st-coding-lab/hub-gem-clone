@@ -19,18 +19,11 @@ export type Database = {
           available: boolean
           created_at: string
           description: string
-          details: string
-          gallery: string[]
           id: string
           image_url: string
-          material: string
           name: string
-          parent_id: string | null
-          placement: string
           position: number
           price: string
-          size: string
-          slug: string
           updated_at: string
           visible: boolean
         }
@@ -38,18 +31,11 @@ export type Database = {
           available?: boolean
           created_at?: string
           description?: string
-          details?: string
-          gallery?: string[]
           id?: string
           image_url?: string
-          material?: string
           name: string
-          parent_id?: string | null
-          placement?: string
           position?: number
           price?: string
-          size?: string
-          slug?: string
           updated_at?: string
           visible?: boolean
         }
@@ -57,30 +43,15 @@ export type Database = {
           available?: boolean
           created_at?: string
           description?: string
-          details?: string
-          gallery?: string[]
           id?: string
           image_url?: string
-          material?: string
           name?: string
-          parent_id?: string | null
-          placement?: string
           position?: number
           price?: string
-          size?: string
-          slug?: string
           updated_at?: string
           visible?: boolean
         }
-        Relationships: [
-          {
-            foreignKeyName: "products_parent_id_fkey"
-            columns: ["parent_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       services: {
         Row: {
@@ -175,39 +146,6 @@ export type Database = {
         }
         Relationships: []
       }
-      tips: {
-        Row: {
-          body: string
-          created_at: string
-          id: string
-          image_url: string
-          position: number
-          title: string
-          updated_at: string
-          visible: boolean
-        }
-        Insert: {
-          body?: string
-          created_at?: string
-          id?: string
-          image_url?: string
-          position?: number
-          title: string
-          updated_at?: string
-          visible?: boolean
-        }
-        Update: {
-          body?: string
-          created_at?: string
-          id?: string
-          image_url?: string
-          position?: number
-          title?: string
-          updated_at?: string
-          visible?: boolean
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string
@@ -234,7 +172,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      claim_admin: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
