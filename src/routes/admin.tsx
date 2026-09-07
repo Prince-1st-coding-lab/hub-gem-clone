@@ -624,6 +624,33 @@ function ProductsPanel() {
     toast.success(parentId ? "Item added — fill in the details" : "Category added");
   };
 
+  const createFromImages = async (parent: Product, files: File[]) => {
+    const siblings = items.filter((p) => p.parent_id === parent.id);
+    const rows: Array<Record<string, unknown>> = [];
+    let i = 0;
+    for (const file of files) {
+      const url = await uploadImage(file);
+      if (!url) continue;
+      i += 1;
+      const base = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+      const name = base || `${parent.name} item ${siblings.length + i}`;
+      rows.push({
+        name,
+        slug: `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Math.random().toString(36).slice(2, 6)}`,
+        parent_id: parent.id,
+        position: siblings.length + i,
+        image_url: url,
+        visible: true,
+      });
+    }
+    if (!rows.length) return;
+    const { error } = await supabase.from("products").insert(rows as never);
+    if (error) { toast.error(error.message); return; }
+    refresh();
+    setOpenIds((prev) => (prev.includes(parent.id) ? prev : [...prev, parent.id]));
+    toast.success(`${rows.length} item(s) added — tap a photo to add details`);
+  };
+
   const remove = async (id: string) => {
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) { toast.error(error.message); return; }
@@ -635,6 +662,7 @@ function ProductsPanel() {
 
   const categories = items.filter((p) => !p.parent_id);
   const childrenOf = (id: string) => items.filter((p) => p.parent_id === id);
+
 
   const form = (p: Product) => (
     <ProductForm
