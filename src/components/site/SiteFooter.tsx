@@ -19,7 +19,7 @@ export function SiteFooter({
               width={40}
               height={40}
               loading="lazy"
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-border"
+              className="h-10 w-10 object-cover"
             />
             <span className="font-display text-base font-semibold">G Modern Creativity Ltd</span>
           </div>
