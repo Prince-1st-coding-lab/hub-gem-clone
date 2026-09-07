@@ -17,7 +17,7 @@ export const Route = createFileRoute("/shop/")({
       context.queryClient.ensureQueryData(productsQuery),
       context.queryClient.ensureQueryData(servicesQuery),
     ]);
-    return { products };
+    return { products: products.filter((p) => !p.parent_id) };
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -77,7 +77,9 @@ export const Route = createFileRoute("/shop/")({
 
 function ShopPage() {
   const { data: settings } = useSuspenseQuery(settingsQuery);
-  const { data: products } = useSuspenseQuery(productsQuery);
+  const { data: allProducts } = useSuspenseQuery(productsQuery);
+  const products = allProducts.filter((p) => !p.parent_id);
+  const hasItems = (id: string) => allProducts.some((p) => p.parent_id === id);
   const { data: services } = useSuspenseQuery(servicesQuery);
   const [openItem, setOpenItem] = useState<QuickViewItem | null>(null);
 
@@ -99,33 +101,51 @@ function ShopPage() {
               key={p.id}
               className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-soft)]"
             >
-              <button
-                type="button"
-                aria-label={`Open details for ${p.name}`}
-                onClick={() =>
-                  setOpenItem({
-                    name: p.name,
-                    price: p.price,
-                    description: p.description,
-                    size: p.size,
-                    material: p.material,
-                    placement: p.placement,
-                    available: p.available,
-                    slug: p.slug,
-                    images: [p.image_url, ...(p.gallery ?? [])].filter(Boolean),
-                  })
-                }
-                className="block w-full"
-              >
-                <img
-                  src={p.image_url}
-                  alt={p.name}
-                  loading="lazy"
-                  width={1200}
-                  height={912}
-                  className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </button>
+              {hasItems(p.id) ? (
+                <Link
+                  to="/shop/$slug"
+                  params={{ slug: p.slug }}
+                  aria-label={`See all items in ${p.name}`}
+                  className="block w-full"
+                >
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    loading="lazy"
+                    width={1200}
+                    height={912}
+                    className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  aria-label={`Open details for ${p.name}`}
+                  onClick={() =>
+                    setOpenItem({
+                      name: p.name,
+                      price: p.price,
+                      description: p.description,
+                      size: p.size,
+                      material: p.material,
+                      placement: p.placement,
+                      available: p.available,
+                      slug: p.slug,
+                      images: [p.image_url, ...(p.gallery ?? [])].filter(Boolean),
+                    })
+                  }
+                  className="block w-full"
+                >
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    loading="lazy"
+                    width={1200}
+                    height={912}
+                    className="h-56 w-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </button>
+              )}
               <div className="p-6">
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="text-xl">
