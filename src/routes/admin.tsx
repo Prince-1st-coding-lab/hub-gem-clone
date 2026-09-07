@@ -682,8 +682,10 @@ function ProductsPanel() {
       <div className={card}>
         <h1 className="font-display text-xl">Shop items</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Open a category, then use “Add item” to put a new product inside it.
+          In a category, tap “Add photos” and pick one or several pictures — each photo becomes its
+          own item straight away. Tap a photo later to add price and details.
         </p>
+
         <button type="button" className={`${btn} mt-4`} onClick={() => create(null, "New category")}>
           New category
         </button>
