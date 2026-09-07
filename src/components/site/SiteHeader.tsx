@@ -9,9 +9,9 @@ export function SiteHeader({ settings }: { settings: SiteSettings }) {
           <img
             src={LOGO_SRC}
             alt="G Modern Creativity Ltd logo"
-            width={56}
-            height={56}
-            className="h-14 w-14 shrink-0 rounded-full bg-card object-cover ring-1 ring-border"
+            width={80}
+            height={80}
+            className="h-20 w-20 shrink-0 rounded-full object-cover"
           />
           <span className="min-w-0 leading-tight">
             <span className="block font-display text-sm font-semibold tracking-tight text-foreground sm:text-base">
