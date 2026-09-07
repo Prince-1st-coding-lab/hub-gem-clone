@@ -770,21 +770,33 @@ function ProductsPanel() {
                 {kids.map((k) => (
                   <div key={k.id} className="rounded-xl border border-border bg-background p-4">
                     <div className="flex flex-wrap items-center gap-3">
-                      {k.image_url ? (
-                        <img
-                          src={k.image_url}
-                          alt=""
-                          className="h-10 w-10 rounded-lg object-cover ring-1 ring-border"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-lg bg-muted ring-1 ring-border" />
-                      )}
-                      <div className="min-w-0 flex-1">
+                      <button
+                        type="button"
+                        aria-label={`Edit ${k.name}`}
+                        className="shrink-0"
+                        onClick={() => setEditingId(editingId === k.id ? null : k.id)}
+                      >
+                        {k.image_url ? (
+                          <img
+                            src={k.image_url}
+                            alt=""
+                            className="h-12 w-12 rounded-lg object-cover ring-1 ring-border"
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-lg bg-muted ring-1 ring-border" />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        className="min-w-0 flex-1 text-left"
+                        onClick={() => setEditingId(editingId === k.id ? null : k.id)}
+                      >
                         <p className="text-sm font-medium">{k.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {k.price || "No price"} · {k.visible ? "Visible" : "Hidden"}
                         </p>
-                      </div>
+                      </button>
+
                       <button
                         type="button"
                         className="rounded-full border border-border px-4 py-2 text-xs"
