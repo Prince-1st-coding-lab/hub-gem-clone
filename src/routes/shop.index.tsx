@@ -77,7 +77,9 @@ export const Route = createFileRoute("/shop/")({
 
 function ShopPage() {
   const { data: settings } = useSuspenseQuery(settingsQuery);
-  const { data: products } = useSuspenseQuery(productsQuery);
+  const { data: allProducts } = useSuspenseQuery(productsQuery);
+  const products = allProducts.filter((p) => !p.parent_id);
+  const hasItems = (id: string) => allProducts.some((p) => p.parent_id === id);
   const { data: services } = useSuspenseQuery(servicesQuery);
   const [openItem, setOpenItem] = useState<QuickViewItem | null>(null);
 
